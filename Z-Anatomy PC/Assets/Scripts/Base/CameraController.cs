@@ -99,41 +99,39 @@ public class CameraController : MonoBehaviour
         lastMousePosition = cameraCenter.position;
 
         trans = transform;
-
     }
-
 
     private void Update()
     {
         if (ActionControl.blockedInput)
             return;
 
-        //ZOOM
-        if (Mouse.current.scroll.ReadValue().y != 0 && !eventSys.IsPointerOverGameObject() && ActionControl.canZoom)
+        // ZOOM
+        float scrollDelta = GetMouseScrollDelta();
+        if (scrollDelta != 0 && !eventSys.IsPointerOverGameObject() && ActionControl.canZoom)
         {
-            distance -= Mouse.current.scroll.ReadValue().y * cam.orthographicSize * zoomVelocity * 0.001f;
+            distance -= scrollDelta * cam.orthographicSize * zoomVelocity * 0.001f;
 
-            if(ActionControl.zoomToMouse)
+            if (ActionControl.zoomToMouse)
             {
                 Vector3 desiredPosition = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
                 float dist = Vector3.Distance(desiredPosition, trans.position);
-                Vector3 direction = Vector3.Normalize(desiredPosition - trans.position) * (dist * Mouse.current.scroll.ReadValue().y * zoomVelocity * 0.001f);
+                Vector3 direction = Vector3.Normalize(desiredPosition - trans.position) * (dist * scrollDelta * zoomVelocity * 0.001f);
 
                 if (RaycastObject.instance.bodyPartScript != null)
                     pivot = RaycastObject.instance.bodyPartScript.center;
 
                 if (distance < MAX_DISTANCE)
                     trans.position += direction;
-               
             }
 
             if (distance > MAX_DISTANCE) distance = MAX_DISTANCE;
             if (distance < MIN_DISTANCE) distance = MIN_DISTANCE;
         }
 
-        //MOVE
-        if ((Mouse.current.middleButton.isPressed || ActionControl.draggingMoveIcon) && !lerping && !movementIsBlocked )//&& IsPointInCameraView())
+        // MOVE
+        if ((Mouse.current.middleButton.isPressed || ActionControl.draggingMoveIcon) && !lerping && !movementIsBlocked)//&& IsPointInCameraView())
         {
             Vector3 A = cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0));
             Vector3 B = cam.ScreenToWorldPoint(new Vector3(lastMousePosition.x, lastMousePosition.y, 0));
@@ -145,7 +143,7 @@ public class CameraController : MonoBehaviour
 
         lastMousePosition = Mouse.current.position.ReadValue();
 
-        //ROTATE
+        // ROTATE
         if ((Mouse.current.rightButton.isPressed || ActionControl.draggingGizmo || ActionControl.draggingRotateIcon) && !lerping)
         {
             var mouseDelta = Mouse.current.delta;
@@ -163,7 +161,7 @@ public class CameraController : MonoBehaviour
 
             y -= mouseDelta.y.ReadValue() * ySpeed * rotationVelocity * 0.001f;
 
-            if(ActionControl.limitRotation)
+            if (ActionControl.limitRotation)
                 y = ClampAngle(y, yMinLimit, yMaxLimit);
 
             if (mouseDelta.x.ReadValue() > 0 || mouseDelta.y.ReadValue() > 0)
@@ -175,6 +173,22 @@ public class CameraController : MonoBehaviour
             trans.rotation = rotation;
             trans.position = position;
         }
+    }
+
+    private float GetMouseScrollDelta()
+    {
+        if (Mouse.current == null)
+            return 0f;
+
+        float scrollDelta = Mouse.current.scroll.ReadValue().y;
+
+        // Older Input System versions commonly reported one Windows wheel notch as 120,
+        // while newer versions can report it as 1. Normalize the newer scale so zoom
+        // sensitivity stays consistent across Unity versions.
+        if (Mathf.Abs(scrollDelta) > 0f && Mathf.Abs(scrollDelta) <= 10f)
+            scrollDelta *= 120f;
+
+        return scrollDelta;
     }
 
     private void LateUpdate()
@@ -280,7 +294,7 @@ public class CameraController : MonoBehaviour
     /// <param name="newDistance">The new distance of the camera from its target.</param>
     public void UpdateCameraPos(float newDistance)
     {
-        if(!movingCenter)
+        if (!movingCenter)
         {
             if (lerpPosCoroutine != null)
                 StopCoroutine(lerpPosCoroutine);
@@ -321,7 +335,7 @@ public class CameraController : MonoBehaviour
     /// <param name="rot">The new rotation to apply to the camera.</param>
     public void SetCameraRotation(Vector3 rot)
     {
-        if(!onRotateCoroutine)
+        if (!onRotateCoroutine)
             StartCoroutine(LerpRotation(rot, 0.25f));
     }
 
@@ -443,7 +457,6 @@ public class CameraController : MonoBehaviour
         {
             //Calculate bounds for all objects
             Bounds bounds = StaticMethods.GetBounds(SelectedObjectsManagement.Instance.selectedObjects);
-
             if (bounds.extents.magnitude == 0)
                 return;
 
@@ -463,7 +476,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// Centers the camera's rotation on the given label's line direction.
     /// </summary>
-    /// <param name="label">The label to center the camera's rotation on.</param>
+    /// <param name="label">The label to center the camera on.</param>
     public void CenterRotation(Label label)
     {
         var rotation = Quaternion.LookRotation(label.lineDirection).eulerAngles;
@@ -497,23 +510,26 @@ public class CameraController : MonoBehaviour
         return !onRotateCoroutine;
     }
 
-
     /// <summary>
     /// Sets the zoom of the camera using the mouse wheel delta value and zoom velocity.
     /// </summary>
     public void SetZoom()
     {
-        distance -= Mouse.current.delta.ReadValue().y * cam.orthographicSize * zoomVelocity * 0.001f;
+        float scrollDelta = GetMouseScrollDelta();
+        if (scrollDelta == 0)
+            return;
+
+        distance -= scrollDelta * cam.orthographicSize * zoomVelocity * 0.001f;
 
         Vector3 desiredPosition = pivot;
 
         float dist = Vector3.Distance(desiredPosition, trans.position);
-        Vector3 direction = Vector3.Normalize(desiredPosition - trans.position) * (dist * Mouse.current.delta.ReadValue().y * zoomVelocity * 0.001f);
+        Vector3 direction = Vector3.Normalize(desiredPosition - trans.position) * (dist * scrollDelta * zoomVelocity * 0.001f);
 
         if (distance < MAX_DISTANCE)
             trans.position += direction;
 
         if (distance > MAX_DISTANCE) distance = MAX_DISTANCE;
-        if (distance < MIN_DISTANCE) distance = MIN_DISTANCE;     
+        if (distance < MIN_DISTANCE) distance = MIN_DISTANCE;
     }
 }
