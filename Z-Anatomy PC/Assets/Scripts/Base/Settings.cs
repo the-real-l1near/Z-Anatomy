@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 using System.Linq;
 using UnityFx.Outline.URP;
 using System.Reflection;
-using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.Rendering.Universal;
 
 public class Settings : MonoBehaviour
 {
