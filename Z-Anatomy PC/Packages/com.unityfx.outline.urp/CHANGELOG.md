@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/); this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.0-local.2] - 2026-09-24
+
+Z-Anatomy local maintenance release for Unity 6.3 and URP 17.3.
+
+### Changed
+- Added a RenderGraph rendering path for Unity 6.3.
+- Preserved the legacy compatibility path as a migration fallback.
+- Updated package metadata to Unity 6000.3 and URP 17.3.0.
+
 ## [0.5.0] - 2021.11.18
 
 Bugfixes and improvements.
@@ -27,7 +36,7 @@ Misc improvements and bugfixes.
 
 ### Added
 - Added possibility to set custom shader tags for URP outlines.
-- Added support for filtering URP outline renderers by [rendering layer mask](https://docs.unity3d.com/ScriptReference/Renderer-renderingLayerMask.html) ([#22](https://github.com/Arvtesh/UnityFx.Outline/issues/22)).
+- Added support for filtering URP outline renderers by [rendering layer mask](https://github.com/Arvtesh/UnityFx.Outline/issues/22) ([#22](https://github.com/Arvtesh/UnityFx.Outline/issues/22)).
 
 ### Fixed
 - Fixed URP outlines rendering issue when both depth-testing and MSAA are enabled ([#23](https://github.com/Arvtesh/UnityFx.Outline/issues/23)).
