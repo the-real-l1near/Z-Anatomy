@@ -36,7 +36,7 @@ Misc improvements and bugfixes.
 
 ### Added
 - Added possibility to set custom shader tags for URP outlines.
-- Added support for filtering URP outline renderers by [rendering layer mask](https://github.com/Arvtesh/UnityFx.Outline/issues/22) ([#22](https://github.com/Arvtesh/UnityFx.Outline/issues/22)).
+- Added support for filtering URP outline renderers by [rendering layer mask](https://docs.unity3d.com/ScriptReference/Renderer-renderingLayerMask.html) ([#22](https://github.com/Arvtesh/UnityFx.Outline/issues/22)).
 
 ### Fixed
 - Fixed URP outlines rendering issue when both depth-testing and MSAA are enabled ([#23](https://github.com/Arvtesh/UnityFx.Outline/issues/23)).
