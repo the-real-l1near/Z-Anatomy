@@ -64,3 +64,9 @@ crashlytics-build.properties
 
 # Firebase private info
 google-services.json
+
+# Unity build output
+Z-Anatomy PC/Z-Anatomy_Data/
+Z-Anatomy PC/Z-Anatomy.exe
+Z-Anatomy PC/UnityPlayer.dll
+Z-Anatomy PC/MonoBleedingEdge/
