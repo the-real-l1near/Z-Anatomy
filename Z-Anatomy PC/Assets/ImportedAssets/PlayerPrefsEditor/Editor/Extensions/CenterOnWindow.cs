@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -9,26 +8,9 @@ namespace BgTools.Extensions
 
     public static class Extensions
     {
-        private static Type[] GetAllDerivedTypes(this AppDomain aAppDomain, Type aType)
-        {
-            var result = new List<Type>();
-            var assemblies = aAppDomain.GetAssemblies();
-
-            foreach (var assembly in assemblies)
-            {
-                var types = assembly.GetTypes();
-                foreach (Type type in types)
-                {
-                    if (type.IsSubclassOf(aType))
-                        result.Add(type);
-                }
-            }
-            return result.ToArray();
-        }
-
         public static Rect GetEditorMainWindowPos(EditorWindow relatedWin = null)
         {
-            var containerWinType = AppDomain.CurrentDomain.GetAllDerivedTypes(typeof(ScriptableObject)).Where(t => t.Name == "ContainerWindow").FirstOrDefault();
+            var containerWinType = TypeCache.GetTypesDerivedFrom(typeof(ScriptableObject)).FirstOrDefault(t => t.Name == "ContainerWindow");
 
             if (containerWinType == null)
                 throw new MissingMemberException("Can't find internal type ContainerWindow. Maybe something has changed inside Unity");
