@@ -22,7 +22,7 @@ public class LexiconElementButton : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        tmpro.enableWordWrapping = true;
+        tmpro.textWrappingMode = TextWrappingModes.Normal;
         increaseHeigth.SetExpanded();
         textIncreaseHeigth.SetExpanded();
         viewElement.MouseEnter();
@@ -30,7 +30,7 @@ public class LexiconElementButton : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        tmpro.enableWordWrapping = false;
+        tmpro.textWrappingMode = TextWrappingModes.NoWrap;
         increaseHeigth.SetNormal();
         textIncreaseHeigth.SetNormal();
         viewElement.MouseExit();
