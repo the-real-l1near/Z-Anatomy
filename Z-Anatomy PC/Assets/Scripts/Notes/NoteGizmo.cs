@@ -19,6 +19,7 @@ public class NoteGizmo : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
 
     [HideInInspector]
+    [System.NonSerialized]
     public RaycastHit hit;
     [HideInInspector]
     public bool placed;
