@@ -30,6 +30,7 @@ public class NamesManagement : MonoBehaviour
 
     public TextAsset translations;
     [HideInInspector]
+    [NonSerialized]
     public Dictionary<string,string[]> splittedTranslations = new Dictionary<string, string[]>();
 
     private string selectedText;
@@ -247,7 +248,6 @@ public class NamesManagement : MonoBehaviour
 
     public void TextClicked(string clickedObject, bool leftClick)
     {
-        //If it is a link
         if(clickedObject.Contains("http"))
         {
             Application.OpenURL(clickedObject);
@@ -266,7 +266,6 @@ public class NamesManagement : MonoBehaviour
             if (clickedGO == null)
                 return;
 
-            //If it was right click -> show contextual menu
             if(!leftClick)
             {
                 ContextualMenu.Instance.contextObject = clickedGO.gameObject;
@@ -278,44 +277,30 @@ public class NamesManagement : MonoBehaviour
             clickedGO.transform.SetActiveParentsRecursively(true, shown);
 
             SelectedObjectsManagement.Instance.DeselectAllObjects();
-
             TangibleBodyPart bodyPartScript = clickedGO.GetComponent<TangibleBodyPart>();
             Label labelSript = clickedGO.GetComponent<Label>();
 
-            //If it is a bodypart
             if (bodyPartScript != null)
             {
-                //Select it
                 SelectedObjectsManagement.Instance.SelectObject(clickedGO.gameObject);
                 ActionControl.Instance.AddCommand(new SelectCommand(SelectedObjectsManagement.Instance.selectedObjects), false);
                 ActionControl.Instance.UpdateButtons();
-
-                //Focus camera
                 cam.SetTarget(clickedGO.gameObject);
                 cam.cameraCenter.position = bodyPartScript.center;
                 cam.UpdateCameraPos(bodyPartScript.distanceToCamera);
             }
-            //If it is a label
             else if(labelSript != null)
             {
-                //Select the label's parent (jump the .labels obj)
                 SelectedObjectsManagement.Instance.SelectObject(labelSript.parent.gameObject);
                 ActionControl.Instance.AddCommand(new SelectCommand(SelectedObjectsManagement.Instance.selectedObjects), false);
                 ActionControl.Instance.UpdateButtons();
-
-                //Isolate it
                 MeshManagement.Instance.IsolationClick();
-
-                //Focus camera
                 cam.SetTarget(labelSript.parent.gameObject);
                 cam.cameraCenter.position = labelSript.parent.center;
                 cam.UpdateCameraPos(labelSript.parent.distanceToCamera);
-
-                //Then select the label
                 SelectedObjectsManagement.Instance.SelectObject(clickedGO.gameObject);
                 ActionControl.Instance.AddCommand(new SelectCommand(SelectedObjectsManagement.Instance.selectedObjects), false);
             }
-            //If it is a global part
             else
             {
                 SelectedObjectsManagement.Instance.activeObjects.Clear();
@@ -327,9 +312,7 @@ public class NamesManagement : MonoBehaviour
             }
 
             NameAndDescription nameScript = clickedGO.GetComponent<NameAndDescription>();
-            //Set the hierarchy bar
             HierarchyBar.Instance.Set(clickedGO.transform);
-            //Expand in lexicon
             Lexicon.Instance.ExpandRecursively();
             ActionControl.Instance.AddCommand(new ShowCommand(shown), false);
             Lexicon.Instance.UpdateTreeViewCheckboxes();
