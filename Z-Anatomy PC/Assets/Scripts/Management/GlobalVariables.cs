@@ -141,8 +141,8 @@ public class GlobalVariables : MonoBehaviour
         DisabledIconColor = _disabledIconColor;
         TaskBarColor = _taskBarColor;
 
-        SetSecondaryColor[] secondaryElements = FindObjectsByType<SetSecondaryColor>(FindObjectsSortMode.None);
-        SetSurfaceColor[] surfaceElements = FindObjectsByType<SetSurfaceColor>(FindObjectsSortMode.None);
+        SetSecondaryColor[] secondaryElements = FindObjectsByType<SetSecondaryColor>();
+        SetSurfaceColor[] surfaceElements = FindObjectsByType<SetSurfaceColor>();
         SetTaskbarColor taskbar = FindAnyObjectByType<SetTaskbarColor>();
 
         foreach (var item in secondaryElements)

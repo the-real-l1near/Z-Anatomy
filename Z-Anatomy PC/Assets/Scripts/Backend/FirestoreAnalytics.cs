@@ -31,10 +31,6 @@ public class FirestoreAnalytics : MonoBehaviour
 
     private void RegisterUser()
     {
-        int todayValue = 0;
-        int totalValue = 0;
-        int webGLValue = 0;
-        int windowsValue = 0;
 #if UNITY_WEBGL
 #else
         /*DocumentReference docRef = ReadFirestore.db.Collection("Analytics").Document("User acquisition");
@@ -83,7 +79,6 @@ public class FirestoreAnalytics : MonoBehaviour
 
     private void IncrementSessions()
     {
-        int todayValue = 0;
 #if UNITY_WEBGL
 #else
         /*DocumentReference docRef = ReadFirestore.db.Collection("Analytics").Document("Sessions");
