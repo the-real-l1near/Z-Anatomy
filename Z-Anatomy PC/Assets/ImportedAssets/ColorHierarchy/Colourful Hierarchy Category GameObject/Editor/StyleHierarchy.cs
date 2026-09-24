@@ -14,18 +14,26 @@ namespace MStudio
         {
             dataArray = AssetDatabase.FindAssets("t:ColorPalette");
 
-            if (dataArray != null)
-            {    //We have only one color palette, so we use dataArray[0] to get the path of the file
+            if (dataArray != null && dataArray.Length > 0)
+            {
+                //We have only one color palette, so we use dataArray[0] to get the path of the file
                 path = AssetDatabase.GUIDToAssetPath(dataArray[0]);
-
                 colorPalette = AssetDatabase.LoadAssetAtPath<ColorPalette>(path);
 
-                EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyWindow;
+                if (colorPalette != null)
+                {
+                    EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyWindow;
+                }
             }
         }
 
         private static void OnHierarchyWindow(EntityId entityId, Rect selectionRect)
         {
+            if (colorPalette == null || colorPalette.colorDesigns == null)
+            {
+                return;
+            }
+
             UnityEngine.Object instance = EditorUtility.EntityIdToObject(entityId);
 
             if (instance != null)

@@ -36,7 +36,12 @@ namespace Nobi.UiRoundedCorners {
 
 		public void Validate() {
 			if (material == null) {
-				material = new Material(Shader.Find("UI/RoundedCorners/RoundedCorners"));
+				Shader shader = Shader.Find("UI/RoundedCorners/RoundedCorners");
+				if (shader == null) {
+					return;
+				}
+
+				material = new Material(shader);
 			}
 
 			if (image == null) {
@@ -49,6 +54,10 @@ namespace Nobi.UiRoundedCorners {
 		}
 
 		public void Refresh() {
+			if (material == null) {
+				return;
+			}
+
 			var rect = ((RectTransform)transform).rect;
 			material.SetVector(Props, new Vector4(rect.width, rect.height, radius, 0));
 		}
