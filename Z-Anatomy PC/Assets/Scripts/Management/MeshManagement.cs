@@ -10,6 +10,7 @@ public class MeshManagement : MonoBehaviour
     public static MeshManagement Instance;
     private SelectedObjectsManagement selectedObjectsManagement;
     [HideInInspector]
+    [NonSerialized]
     public Dictionary<int, Material[]> rendererMaterials = new Dictionary<int, Material[]>();
 
     private void Awake()
