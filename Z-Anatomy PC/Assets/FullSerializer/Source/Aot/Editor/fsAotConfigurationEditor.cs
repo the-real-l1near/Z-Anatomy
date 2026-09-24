@@ -7,16 +7,17 @@ using System.Reflection;
 using FullSerializer.Internal;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assemblies;
 
 namespace FullSerializer {
 	[InitializeOnLoad]
 	public static class PlayStateNotifier {
 		static PlayStateNotifier() {
-			EditorApplication.playmodeStateChanged += ModeChanged;
+			EditorApplication.playModeStateChanged += ModeChanged;
 		}
 
-		private static void ModeChanged () {
-			if (!EditorApplication.isPlayingOrWillChangePlaymode && EditorApplication.isPlaying) {
+		private static void ModeChanged (PlayModeStateChange state) {
+			if (state == PlayModeStateChange.ExitingPlayMode) {
 				//Debug.Log("There are " + fsAotCompilationManager.AotCandidateTypes.Count + " candidate types");
 				foreach (fsAotConfiguration target in Resources.FindObjectsOfTypeAll<fsAotConfiguration>()) {
 					var seen = new HashSet<string>(target.aotTypes.Select(t => t.FullTypeName));
@@ -67,7 +68,7 @@ namespace FullSerializer {
 		}
 
 		private IEnumerable<Type> FindAllAotTypes() {
-			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+			foreach (var assembly in CurrentAssemblies.GetLoadedAssemblies()) {
 				foreach (Type t in assembly.GetTypes()) {
 					bool performAot = false;
 
