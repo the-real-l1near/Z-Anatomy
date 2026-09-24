@@ -27,6 +27,10 @@
 # Unity/Firebase generated runtime caches
 /Z-Anatomy PC/remote_config_data
 
+# Build-generated metadata
+/Z-Anatomy PC/Assets/StreamingAssets/build_info
+/Z-Anatomy PC/Assets/StreamingAssets/build_info.meta
+
 # IDE/editor state
 .vs/
 .idea/
