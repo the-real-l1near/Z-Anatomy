@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine.Assemblies;
 
 namespace FullSerializer.Internal {
     /// <summary>
@@ -36,7 +37,7 @@ namespace FullSerializer.Internal {
                 _assembliesByName[assembly.FullName] = assembly;
                 _assembliesByIndex.Add(assembly);
 #else
-                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                foreach (Assembly assembly in CurrentAssemblies.GetLoadedAssemblies()) {
                     _assembliesByName[assembly.FullName] = assembly;
                     _assembliesByIndex.Add(assembly);
                 }
