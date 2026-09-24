@@ -6,7 +6,9 @@
 /Z-Anatomy PC/[Oo]bj/
 /Z-Anatomy PC/[Ll]ogs/
 /Z-Anatomy PC/[Mm]emoryCaptures/
-/Z-Anatomy PC/[Uu]serSettings/
+/Z-Anatomy PC/[Uu]serSettings/*
+!/Z-Anatomy PC/UserSettings/HierarchyWindow/
+!/Z-Anatomy PC/UserSettings/HierarchyWindow/.gitkeep
 /Z-Anatomy PC/[Rr]ecordings/
 
 # Unity build output
