@@ -18,6 +18,7 @@ public class ResolutionManager : MonoBehaviour
     // List of horizontal resolutions to include
     int[] resolutions = new int[] { 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2432, 2560 };
 
+    [System.NonSerialized]
     public Resolution DisplayResolution;
     public List<Vector2> WindowedResolutions, FullscreenResolutions;
 
