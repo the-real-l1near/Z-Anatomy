@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.UI;
+using System.Text;
 
 public class Collections : MonoBehaviour
 {
@@ -139,27 +140,57 @@ public class Collections : MonoBehaviour
 
     private CollectionElementData LoadCollection(string name)
     {
+        string path = Application.persistentDataPath + "/z-anatomy/collections/" + name;
+
+        if (!File.Exists(path))
+        {
+            Debug.Log("Collection file " + "z-anatomy/collections/" + name + " was not found");
+            return null;
+        }
+
         try
         {
-            string path = Application.persistentDataPath + "/z-anatomy/collections/" + name;
-            if (File.Exists(path))
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                FileStream stream = new FileStream(path, FileMode.Open);
-                stream.Position = 0;
+            byte[] fileBytes = File.ReadAllBytes(path);
 
-                CollectionElementData data = (CollectionElementData)formatter.Deserialize(stream);
-                stream.Close();
-                Debug.Log("Collection file " + "z-anatomy/collections/" + name + " was LOADED");
-                return data;
-            }
-            else
+            if (fileBytes.Length == 0)
             {
-                Debug.Log("Collection file " + "z-anatomy/collections/" + name + " was not found");
+                Debug.Log("Collection file " + "z-anatomy/collections/" + name + " is empty");
                 return null;
             }
+
+            // New format: JSON
+            string json = Encoding.UTF8.GetString(fileBytes)
+                .TrimStart('\uFEFF', ' ', '\t', '\r', '\n');
+
+            if (json.StartsWith("{"))
+            {
+                CollectionElementData data = JsonUtility.FromJson<CollectionElementData>(json);
+
+                Debug.Log("Collection file " + "z-anatomy/collections/" + name + " was LOADED (JSON)");
+                return data;
+            }
+
+            // Legacy format: BinaryFormatter
+            CollectionElementData legacyData;
+
+    #pragma warning disable UAC0023
+            using (MemoryStream stream = new MemoryStream(fileBytes))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                legacyData = (CollectionElementData)formatter.Deserialize(stream);
+            }
+    #pragma warning restore UAC0023
+
+            Debug.Log("Collection file " + "z-anatomy/collections/" + name + " was LOADED (legacy)");
+
+            // Immediately migrate the old file to JSON.
+            SaveCollectionFile(legacyData, path);
+
+            Debug.Log("Collection file " + "z-anatomy/collections/" + name + " was MIGRATED to JSON");
+
+            return legacyData;
         }
-        catch(System.Exception e)
+        catch (System.Exception e)
         {
             Debug.Log("Error loading " + "z-anatomy/collections/" + name + " Error: " + e.Message);
             return null;
@@ -216,16 +247,19 @@ public class Collections : MonoBehaviour
     {
         try
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(path, FileMode.Create);
-            formatter.Serialize(stream, elementData);
-            stream.Close();
+            SaveCollectionFile(elementData, path);
             PopUpManagement.Instance.Show("Collection created!");
         }
         catch
         {
             PopUpManagement.Instance.Show("Something went wrong. Collection was not saved.");
         }
+    }
+
+    private void SaveCollectionFile(CollectionElementData elementData, string path)
+    {
+        string json = JsonUtility.ToJson(elementData, true);
+        File.WriteAllText(path, json);
     }
 
     private IEnumerator TakeScreenshot()
