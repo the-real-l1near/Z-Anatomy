@@ -99,7 +99,6 @@ namespace UnityFx.Outline.URP
 						lightData,
 						sortingCriteria);
 
-					drawingSettings.enableDynamicBatching = true;
 					drawingSettings.overrideMaterial = outlineResources.RenderMaterial;
 					drawingSettings.overrideMaterialPassIndex = passData.AlphaTesting
 						? OutlineResources.RenderShaderAlphaTestPassId

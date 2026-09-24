@@ -81,7 +81,6 @@ namespace UnityFx.Outline.URP
 		{
 			if (_outlineResources && _outlineResources.IsValid)
 			{
-				_outlinePass.Setup(renderer);
 				renderer.EnqueuePass(_outlinePass);
 			}
 		}
