@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ButtonSpriteSwap : Button, IPointerClickHandler
+public class ButtonSpriteSwap : Button, IPointerClickHandler, IPointerDownHandler
 {
     public Sprite defaultImage;
     public Sprite pressedImage;
@@ -56,7 +56,7 @@ public class ButtonSpriteSwap : Button, IPointerClickHandler
             btn.image.sprite = defaultImage;
     }
 
-    private void OnMouseDown()
+    public void OnPointerDown(PointerEventData eventData)
     {
         if (isEnabled)
         {
