@@ -58,8 +58,10 @@ public class GlobalVariables : MonoBehaviour
     [HideInInspector]
     public List<TangibleBodyPart> insertions;
     [HideInInspector]
+    [System.NonSerialized]
     public Dictionary<string, TangibleBodyPart> insertionsDictionary = new Dictionary<string, TangibleBodyPart>();
     [HideInInspector]
+    [System.NonSerialized]
     public Dictionary<string, TangibleBodyPart> musclesDictionary = new Dictionary<string, TangibleBodyPart>();
     [HideInInspector]
     public List<TangibleBodyPart> joints;
