@@ -20,13 +20,13 @@ namespace MStudio
 
                 colorPalette = AssetDatabase.LoadAssetAtPath<ColorPalette>(path);
 
-                EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindow;
+                EditorApplication.hierarchyWindowItemByEntityIdOnGUI += OnHierarchyWindow;
             }
         }
 
-        private static void OnHierarchyWindow(int instanceID, Rect selectionRect)
+        private static void OnHierarchyWindow(EntityId entityId, Rect selectionRect)
         {
-            UnityEngine.Object instance = EditorUtility.InstanceIDToObject(instanceID);
+            UnityEngine.Object instance = EditorUtility.EntityIdToObject(entityId);
 
             if (instance != null)
             {
