@@ -191,11 +191,13 @@ public class ResolutionManager : MonoBehaviour
         IEnumerator WaitToScreenChange()
         {
             yield return null;
-#if !UNITY_EDITOR && UNITY_STANDALONE_WIN   // Dont do this while on Unity Editor!
-                    BorderlessWindow.SetFramelessWindow(true);
+#if !UNITY_EDITOR && UNITY_STANDALONE_WIN
+    BorderlessWindow.SetFramelessWindow(true);
 #endif
-            //BorderlessWindow.MoveWindowPos(Vector2Int.zero, Screen.width - borderSize.x, Screen.height - borderSize.y);
-            BorderlessWindow.MoveWindowPos(Vector2Int.zero, Screen.width, Screen.height);
+
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+    BorderlessWindow.MoveWindowPos(Vector2Int.zero, Screen.width, Screen.height);
+#endif
         }
 
     }

@@ -8,6 +8,7 @@ public class DragWindow : MonoBehaviour, IDragHandler
     Vector2 deltaValue = Vector2.zero;
     public void OnDrag(PointerEventData eventData)
     {
+    #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         if (BorderlessWindow.framed || Screen.fullScreen)
             return;
 
@@ -15,7 +16,8 @@ public class DragWindow : MonoBehaviour, IDragHandler
         if (eventData.dragging)
         {
             var currentRes = ResolutionManager.Instance.WindowedResolutions[ResolutionManager.Instance.currWindowedRes];
-            BorderlessWindow.MoveWindowPos(deltaValue,(int)currentRes.x, (int)currentRes.y);
+            BorderlessWindow.MoveWindowPos(deltaValue, (int)currentRes.x, (int)currentRes.y);
         }
+    #endif
     }
 }
