@@ -17,7 +17,7 @@ public class LayersSlider : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        SelectedObjectsManagement.Instance.GetActiveObjects();
+        SelectedObjectsManagement.Instance.RefreshActiveObjects();
         beforeDrag = new List<GameObject>(SelectedObjectsManagement.Instance.activeObjects);
     }
 
@@ -28,7 +28,7 @@ public class LayersSlider : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
         valueChanged = false;
 
-        SelectedObjectsManagement.Instance.GetActiveObjects();
+        SelectedObjectsManagement.Instance.RefreshActiveObjects();
         List<GameObject> afterDrag = SelectedObjectsManagement.Instance.activeObjects;
 
         var shown = afterDrag.Where(it => !beforeDrag.Contains(it)).ToList();

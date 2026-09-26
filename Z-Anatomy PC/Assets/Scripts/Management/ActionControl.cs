@@ -157,7 +157,7 @@ public class ActionControl : MonoBehaviour
 
     public void SelectAll()
     {
-        SelectedObjectsManagement.Instance.GetActiveObjects();
+        SelectedObjectsManagement.Instance.RefreshActiveObjects();
         foreach (var item in SelectedObjectsManagement.Instance.activeObjects)
             SelectedObjectsManagement.Instance.SelectObject(item);
 

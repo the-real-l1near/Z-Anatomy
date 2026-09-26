@@ -164,7 +164,7 @@ public class MeshManagement : MonoBehaviour
         foreach (var item in SelectedObjectsManagement.Instance.selectedObjects)
             item.transform.SetActiveParentsRecursively(true);
 
-        SelectedObjectsManagement.Instance.GetActiveObjects();
+        SelectedObjectsManagement.Instance.RefreshActiveObjects();
         SelectedObjectsManagement.Instance.DeleteOutlineToActiveObjects();
 
         ActionControl.Instance.UpdateButtons();

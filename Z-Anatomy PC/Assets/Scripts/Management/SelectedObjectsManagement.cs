@@ -33,14 +33,23 @@ public class SelectedObjectsManagement : MonoBehaviour
     }
 
     /// <summary>
-    /// This method clears the list of active objects and updates it with all currently active objects in the scene. 
-    /// It then updates the camera's bounds and cross-section toggles to reflect any changes.
+    /// Clears the list of active objects and updates it with all currently active objects in the scene.
     /// </summary>
-    public void GetActiveObjects()
+
+    public void RefreshActiveObjects()
     {
         activeObjects.Clear();
         //Can be optimized!
         activeObjects.AddRange(GlobalVariables.Instance.allBodyParts.Where(it => it.gameObject.activeInHierarchy).Select(it => it.gameObject).ToList());
+    }
+
+    /// <summary>
+    /// Refreshes the active objects and updates the camera's bounds and cross-section toggles.
+    /// </summary>
+
+    public void GetActiveObjects()
+    {
+        RefreshActiveObjects();
         cam.UpdateBounds();
         UpdateCrossSectionToggles();
     }

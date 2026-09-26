@@ -59,7 +59,7 @@ public class ContextualMenu : MonoBehaviour
         foreach (Transform item in bonusCollectionPanel.transform)
             Destroy(item.gameObject);
 
-        SelectedObjectsManagement.Instance.GetActiveObjects();
+        SelectedObjectsManagement.Instance.RefreshActiveObjects();
         List<string> actualTags = new List<string>();
         foreach (var item in SelectedObjectsManagement.Instance.activeObjects)
         {
