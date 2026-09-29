@@ -87,7 +87,8 @@ MonoBehaviour:
   - {fileID: 4236891733512084713}
   - {fileID: 4469481740963245135}
   - {fileID: -7811637325585049897}
-  m_RendererFeatureMap: e9dcc6679576cc3a4f6c358cf6c9063ed716527e3d7d9793l
+  - {fileID: 6637682115405940271}
+  m_RendererFeatureMap: e9dcc6679576cc3a4f6c358cf6c9063ed716527e3d7d97932f06bc4cb7c81d5cl
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 3
@@ -174,3 +175,27 @@ MonoBehaviour:
     _renderingLayerMask: 1
   _renderPassEvent: 500
   _shaderPassNames: []
+--- !u!114 &6637682115405940271
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e43b324988d8404d96409a253b2c441, type: 3}
+  m_Name: Translucent Renderer Feature
+  m_EditorClassIdentifier: TranslucentUIFX.Runtime::TranslucentUIFX.TranslucentRendererFeature
+  m_Active: 1
+  settings:
+    injectionPoint: 0
+    captureLayer: 0
+    backdropMipLevels: 4
+    blurPasses: 4
+    kernelSpread: 1
+    dither: 0.5
+    matchCameraFormat: 1
+    captureFormat: 48
+    updateMode: 0
+    updateIntervalFrames: 3
