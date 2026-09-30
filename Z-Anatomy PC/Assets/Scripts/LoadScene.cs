@@ -1,47 +1,64 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadScene : MonoBehaviour
 {
-    public float duration;
-    private Image img;
+    [SerializeField] private Slider progressBar;
+    [SerializeField] private CanvasGroup fadeOverlay;
+    [SerializeField] private float fadeDuration = 0.5f;
 
-    private void Awake()
+    private void Start()
     {
-        img = GetComponent<Image>();
+        StartCoroutine(LoadMainScene());
     }
 
-    private IEnumerator Start()
+    private IEnumerator LoadMainScene()
     {
-        yield return StartCoroutine(Fade());
-        StartCoroutine(LoadSceneAsync());
-    }
+        AsyncOperation operation = SceneManager.LoadSceneAsync("MainScene");
+        operation.allowSceneActivation = false;
 
-    IEnumerator LoadSceneAsync()
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MainScene");
+        while (operation.progress < 0.9f)
+        {
+            if (progressBar != null)
+            {
+                progressBar.value = operation.progress / 0.9f;
+            }
 
-        while(!asyncLoad.isDone)
+            yield return null;
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.value = 1f;
+        }
+
+        // Activate MainScene while the overlay is still covering the screen.
+        operation.allowSceneActivation = true;
+
+        // Wait until MainScene is actually active.
+        while (!operation.isDone)
         {
             yield return null;
         }
-    }
 
-    IEnumerator Fade()
-    {
-        float time = 0;
-        Color color = img.color;
-        while (time < duration)
+        // Fade the MainScene overlay away.
+        if (fadeOverlay != null)
         {
-            float t = time / duration;
-            color.a = Mathf.Lerp(0, 1, t);
-            img.color = color;
-            time += Time.deltaTime;
-            yield return null;
+            float elapsed = 0f;
+
+            while (elapsed < fadeDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / fadeDuration);
+
+                fadeOverlay.alpha = 1f - t;
+
+                yield return null;
+            }
+
+            fadeOverlay.alpha = 0f;
         }
     }
-
 }
