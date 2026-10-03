@@ -238,7 +238,7 @@ public class CrossPlanesGizmo : MonoBehaviour
         planeScript.NoCutClick();
         orientationGizmo.GetComponent<RectTransform>().anchoredPosition = orientationGizmo.GetComponent<GizmoBehaviour>().originalCubePosition;
         orientationGizmo.transform.localScale = Vector3.one * 30;
-        gizmoCanvasRT.sizeDelta = cubeCanvasOriginalSize;
+        // gizmoCanvasRT.sizeDelta = cubeCanvasOriginalSize;
         opened = false;
         lastClick = GizmoFace.Left;
     }

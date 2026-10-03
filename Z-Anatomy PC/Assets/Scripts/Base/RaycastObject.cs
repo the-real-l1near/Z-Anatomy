@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class RaycastObject : MonoBehaviour
 {
@@ -29,6 +30,10 @@ public class RaycastObject : MonoBehaviour
     private RaycastHit[] hits;
     private Vector2 firstMousePos = new Vector2();
     private GameObject objectSelected;
+
+    private bool touchStarted;
+    private Vector2 firstTouchPos;
+    private int touchId = -1;
 
     private int layer_mask1;
     private int layer_mask2;
@@ -60,15 +65,19 @@ public class RaycastObject : MonoBehaviour
         if (raycastBlocked || EventSystem.current.IsPointerOverGameObject())
         {
             highlightText.text = "";
-            return;
+        }
+        else
+        {
+            if (ActionControl.crossSectionsEnabled)
+                HighlightWithPlane();
+            else if (!ActionControl.creatingLocalNote)
+                Highlight();
+
+            Select();
+            ShowContextualMenu();
         }
 
-        if (ActionControl.crossSectionsEnabled)
-            HighlightWithPlane();
-        else if (!ActionControl.creatingLocalNote)
-            Highlight();
-        Select();
-        ShowContextualMenu();
+        HandleTouchTap();
     }
 
     private void LateUpdate()
@@ -191,7 +200,7 @@ public class RaycastObject : MonoBehaviour
                 if (ActionControl.crossSectionsEnabled)
                     CrossPlanesGizmo.Instance.SetPlane(faceClicked);
             }
-            else if(!ActionControl.creatingLocalNote)
+            else if (!ActionControl.creatingLocalNote)
             {
                 Label labelScript = objectSelected.GetComponent<Label>();
 
@@ -205,6 +214,103 @@ public class RaycastObject : MonoBehaviour
         }
     }
 
+    private void HandleTouchTap()
+    {
+        if (Touchscreen.current == null)
+            return;
+
+        TouchControl touch = Touchscreen.current.primaryTouch;
+
+        if (touch.press.wasPressedThisFrame)
+        {
+            touchStarted = true;
+            firstTouchPos = touch.position.ReadValue();
+            touchId = touch.touchId.ReadValue();
+        }
+
+        if (!touchStarted || !touch.press.wasReleasedThisFrame)
+            return;
+
+        Vector2 touchPosition = touch.position.ReadValue();
+
+        touchStarted = false;
+
+        if (Vector2.Distance(firstTouchPos, touchPosition) >= 10f)
+        {
+            touchId = -1;
+            return;
+        }
+
+        bool pointerOverUI = EventSystem.current != null &&
+                             EventSystem.current.IsPointerOverGameObject(touchId);
+
+        if (pointerOverUI)
+        {
+            touchId = -1;
+            return;
+        }
+
+        SelectAtPosition(touchPosition);
+
+        touchId = -1;
+    }
+
+    private void SelectAtPosition(Vector2 screenPosition)
+    {
+        Ray ray = cam.ScreenPointToRay(screenPosition);
+
+        if (ActionControl.crossSectionsEnabled)
+        {
+            Physics.Raycast(ray, out hit, 100, finalmask);
+
+            ray.origin = ray.GetPoint(100);
+            ray.direction = -ray.direction;
+
+            hits = Physics.RaycastAll(ray, 100, finalmask);
+
+            if (hits.Length == 0)
+                return;
+
+            TangibleBodyPart selectedBodyPart = GetFirstAfterPlane(hits, hit);
+
+            if (selectedBodyPart == null)
+                return;
+
+            objectSelected = selectedBodyPart.gameObject;
+            bodyPartScript = selectedBodyPart;
+        }
+        else
+        {
+            if (!Physics.Raycast(ray, out hit, 100, finalmask))
+                return;
+
+            objectSelected = hit.transform.gameObject;
+            bodyPartScript = objectSelected.GetComponent<TangibleBodyPart>();
+        }
+
+        if (LayerMask.LayerToName(objectSelected.layer).Equals("Cube"))
+        {
+            GizmoFace faceClicked = GizmoBehaviour.instance.GetHitFace(hit);
+            GizmoBehaviour.instance.SetCameraRotation(faceClicked);
+
+            if (ActionControl.crossSectionsEnabled)
+                CrossPlanesGizmo.Instance.SetPlane(faceClicked);
+
+            return;
+        }
+
+        if (!ActionControl.creatingLocalNote)
+        {
+            Label labelScript = objectSelected.GetComponent<Label>();
+
+            if (bodyPartScript != null)
+                bodyPartScript.ObjectClicked();
+
+            if (labelScript != null)
+                labelScript.Click();
+        }
+    }
+
     private void Highlight()
     {
         var mousePos = Mouse.current.position.ReadValue();
@@ -215,7 +321,7 @@ public class RaycastObject : MonoBehaviour
 
         bool sphereHit = false;
 
-        if(!raycastHit)
+        if (!raycastHit)
         {
             Vector3 A = worldMousePos - cam.transform.forward * 10f;
             Vector3 B = worldMousePos + cam.transform.forward * 10f;
@@ -266,7 +372,7 @@ public class RaycastObject : MonoBehaviour
             ray.direction = -ray.direction;
             hits = Physics.RaycastAll(ray, 100, finalmask);
 
-            if(hits.Length > 0)
+            if (hits.Length > 0)
             {
                 objectSelected = GetFirstAfterPlane(hits, hit).gameObject;
                 bodyPartScript = objectSelected.GetComponent<TangibleBodyPart>();
@@ -306,7 +412,7 @@ public class RaycastObject : MonoBehaviour
 
     private void ShowContextualMenu()
     {
-        if(Mouse.current.rightButton.wasPressedThisFrame && (bodyPartScript != null || SelectedObjectsManagement.Instance.selectedObjects.Count > 0))
+        if (Mouse.current.rightButton.wasPressedThisFrame && (bodyPartScript != null || SelectedObjectsManagement.Instance.selectedObjects.Count > 0))
         {
             firstMousePos = Mouse.current.position.ReadValue();
             if (bodyPartScript != null)

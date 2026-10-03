@@ -59,10 +59,5 @@ public class ButtonSpriteSwap : Button, IPointerClickHandler, IPointerDownHandle
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
-
-        if (isEnabled)
-        {
-            SwapImage();
-        }
     }
 }

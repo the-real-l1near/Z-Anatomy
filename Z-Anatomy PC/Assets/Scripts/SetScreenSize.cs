@@ -34,5 +34,7 @@ public class SetScreenSize : MonoBehaviour
         proportion = Screen.height / (mainCamera.orthographicSize * 2);
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width / proportion);
         rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, mainCamera.orthographicSize * 2);
+        lastDistance = mainCamera.orthographicSize;
+        resolution = new Vector2(Screen.width, Screen.height);
     }
 }
